@@ -70,13 +70,15 @@ var fightOrSkip = function() {
   var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
 
   // Conditional Recursive Function Call
+  promptFight = promptFight.toLowerCase(); 
+
 if (promptFight === "" || promptFight === null) {
   window.alert("You need to provide a valid answer! Please try again.");
   return fightOrSkip();
 }
 
   // if player picks "skip" confirm and then stop the loop
-  if (promptFight === "skip" || promptFight === "SKIP") {
+  if (promptFight === "skip") {
     // confirm player wants to skip
     var confirmSkip = window.confirm("Are you sure you'd like to quit?");
 
@@ -84,7 +86,8 @@ if (promptFight === "" || promptFight === null) {
     if (confirmSkip) {
       window.alert(player.name + " has decided to skip this fight. Goodbye!");
       // subtract money from playerMoney for skipping
-      player.money -= 10;
+      player.money = Math.max(0,player.Money - 10);
+      return true 
       shop();
     }
   }
@@ -94,7 +97,9 @@ if (promptFight === "" || promptFight === null) {
 var fight = function(enemy) {
   while (player.Health > 0 && enemy.Health > 0) {
     // ask player if they'd like to fight or run
-   fightOrSkip();
+  if (fightOrSkip()) {
+    break;
+  };
 
 // generate random damage value based on player's attack power
     var damage = randomNumber(player.Attack - 3, player.Attack);
@@ -202,21 +207,20 @@ var endGame = function() {
 var shop = function() {
   // ask player what they'd like to do
   var shopOptionPrompt = window.prompt(
-    'Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one "REFILL", "UPGRADE", or "LEAVE" to make a choice.'
+    'Would you like to 1) refill your health, 2) upgrade your attack, or 3) leave the store? Please enter 1, 2 or 3 to make a choice.'
   );
+
+  shopOptionPrompt = parseInt(shopOptionPrompt);
 
   // use switch case to carry out action
   switch (shopOptionPrompt) {
-    case 'REFILL':
-    case 'refill':
+    case 1:
       player.refillHealth();
       break;
-    case 'UPGRADE':
-    case 'upgrade':
+    case 2:
      player.upgradeAttack();
       break;
-    case 'LEAVE':
-    case 'leave':
+    case 3:
       window.alert('Leaving the store.');
 
       // do nothing, so function will end
